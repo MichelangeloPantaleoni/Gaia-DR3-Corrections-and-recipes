@@ -10,7 +10,7 @@ The parallax values, $\varpi$, in Gaia DR3 (as retrieved from [ESA’s Gaia Arch
 
 $\varpi_c = \varpi-\varpi_0$
 
-The algorithm to compute $\varpi_0$ is described in [Maíz Apellániz (2022)](https://ui.adsabs.harvard.edu/abs/2022A%2526A...657A.130M), which improved on the parallax zero-point recipe from [Lindegren et al. (2021b)](https://ui.adsabs.harvard.edu/#abs/2021A%26A...649A...4L) for the bright stars. The ```correct_parallax``` function performs this correction following the recipe in Maíz Apellániz (2022) by default (the parameter ```mode``` allows the user to select 'Lindegren' as a recipe also). The recipe is a function of the stars brightness, ecliptic latitude and pseudocolor
+The algorithm to compute $\varpi_0$ is described in [Maíz Apellániz (2022)](https://ui.adsabs.harvard.edu/abs/2022A%2526A...657A.130M), which improved on the parallax zero-point recipe from [Lindegren et al. (2021b)](https://ui.adsabs.harvard.edu/#abs/2021A%26A...649A...4L) for the bright stars. The ```correct_parallax()``` function performs this correction following the recipe in Maíz Apellániz (2022) by default (the parameter ```mode``` allows the user to select 'Lindegren' as a recipe also). The recipe is a function of the stars brightness, ecliptic latitude and pseudocolor
 
 If ```phot_g_mean_mag``` is not present then we assume the star to be faint ($G = 21.0$ mag) and compute the parallax zero-point with that information. Values for ```phot_g_mean_mag``` outside the range from $6.0$ to $21.0$ mag are computed as if they were at the closest boundary of the range, and values inside that range are linearly interpolated from a table.
 
@@ -18,23 +18,13 @@ Objects with 2-parameter solutions (```astrometric_params_solved``` = 3) have no
 
 **Parallax uncertainties:**
 
-Moreover, Gaia DR3 significantly underestimates the catalogue
-uncertainties in parallax, 𝜎int . To correct these internal random un-
-certainties we scale them up by a constant 𝑘, whose value is calculated
-following Maíz Apellániz (2022). Then, an unaccounted systematic
-uncertainty of 𝜎sys = 10.3 𝜇as (Maíz Apellániz et al. 2021c) is added
-in quadrature according to Eqn. 1 in Fabricius et al. (2021) to yield
-an external uncertainty of
-𝜎ext =
-√︃
-2
-(𝑘𝜎int ) 2 + 𝜎sys
-(2)
-The resulting 𝜛𝑐 ± 𝜎ext values improve the accuracy of Gaia DR3
-𝜛 ±𝜎int values for single sources by a significant amount. Papers that
-directly make use of the Gaia DR3 values are prone to make over-
-confident assessments of parallax uncertainties and systematically
-overestimate distances for bright stars.
+Gaia DR3 significantly underestimates the catalogue uncertainties for the parallax, $\sigma_{\text{int}}$, which has prompted optimistically precise results in the recent literature. To correct these internal random uncertainties we scale them up by a constant factor $k$, whose value is calculated following the recipe in [Maíz Apellániz (2022)](https://ui.adsabs.harvard.edu/abs/2022A%2526A...657A.130M). Then, a previously unaccounted systematic uncertainty of $\sigma_{\text{sys}} = 10.3$ $\mu as$ ([Maíz Apellániz et al. 2021c](https://ui.adsabs.harvard.edu/#abs/2021A%26A...649A..13M)) is added in quadrature, following [Fabricius et al. (2021)](https://ui.adsabs.harvard.edu/#abs/2021A%26A...649A...5F) to yield an external uncertainty of
+
+$\sigma_{\text{ext}} = \sqrt{(k\sigma_{\text{int}})^2+\sigma_{\text{sys}}^2}$
+
+The resulting $\varpi_c \pm \sigma_{\text{ext}}$ values improve the accuracy of Gaia DR3 $\varpi \pm \sigma_{\text{int}}$ values for single sources by a significant amount. Papers that directly make use of the Gaia DR3 values are prone to make overconfident assessments of parallax uncertainties and systematically overestimate distances for bright stars.
+
+The calculations are handled by the ```correct_parallax_error()``` function, which has a dependence on the brightness of the star and the ```ruwe``` value.
 
 ## Proper motion corrections
 
