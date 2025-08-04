@@ -30,8 +30,8 @@ The calculations are handled by the ```correct_parallax_error()``` function, whi
 
 ## Proper motion corrections
 
-## Astrometric correlations and tranforming to Galactic coordinates
+## Astrometric correlations when tranforming to Galactic coordinates
 
 ## Distances to OB stars
 
-## Photometry corrections
+## Photometric corrections
