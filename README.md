@@ -24,7 +24,9 @@ $\sigma_{\text{ext}} = \sqrt{(k\sigma_{\text{int}})^2+\sigma_{\text{sys}}^2}$
 
 The resulting $\varpi_c \pm \sigma_{\text{ext}}$ values improve the accuracy of Gaia DR3 $\varpi \pm \sigma_{\text{int}}$ values for single sources by a significant amount. Papers that directly make use of the Gaia DR3 values are prone to make overconfident assessments of parallax uncertainties and systematically overestimate distances for bright stars.
 
-The calculations are handled by the ```correct_parallax_error()``` function, which has a dependence on the brightness of the star and the ```ruwe``` value.
+The calculations are handled by the ```correct_parallax_error()``` function, which has a dependence on the brightness of the star and the ```RUWE``` value.
+
+**Parallax for groups of stars**
 
 ## Proper motion corrections
 
