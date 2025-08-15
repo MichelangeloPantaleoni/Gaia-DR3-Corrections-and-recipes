@@ -1,5 +1,5 @@
 # Gaia DR3 Corrections and recipes
-Gaia DR3 parallax, proper motion and photometric corrections aswell as distance estimation algorithms used in Pantaeloni et al. (in review).
+This repository presents Python code for the Gaia DR3 parallax, proper motion and photometric corrections aswell as distance estimation algorithms used in Pantaeloni et al. (in review).
 
 ## Parallax corrections
 Astrometry in Gaia DR3 remained unchanged with respect to Gaia EDR3 ([Vallenari et al. 2023](https://ui.adsabs.harvard.edu/#abs/2023A%26A...674A...1G)), which means that the current corrections are valid for both data releases.
@@ -22,13 +22,15 @@ Gaia DR3 significantly underestimates the catalogue uncertainties for the parall
 
 $\sigma_{\text{ext}} = \sqrt{(k\sigma_{\text{int}})^2+\sigma_{\text{sys}}^2}$
 
-The calculations are handled by the ```correct_parallax_error()``` function, which computes the multiplicative factor $k$ as a function of the brightness of the source and the ```RUWE``` value. The dependence on the ```RUWE``` has been tested up to $3.0$, which is far beyond the $1.4$ threshold recommended for reliable single-source astrometric solutions ([Lindegren 2018](https://www.semanticscholar.org/paper/Re-normalising-the-astrometric-chi-square-in-Gaia/94f6f242b43ada2675fd46b811bc86584a906019)). ```RUWE``` values beyond 1.4 are thought to express a non-negligible probability of giving bad results for the parallax, as the astrometric solutions provided by the Gaia DPAC are not fitting correctly the single-source astrometry (probably due to unrecognized binarity). This prompts researchers to select sources with lower ```RUWE``` values, but in fact sources with larger ones can still be usefull to some extent. When above ```RUWE``` of 1.4 the $k$ factor simply increases rapidly (reproducing a reasonable increase in the parallax uncertainty).
+The calculations are handled by the ```correct_parallax_error()``` function, which computes the multiplicative factor $k$ as a function of the brightness of the source and the ```RUWE``` value. The dependence on the ```RUWE``` has been tested up to $3.0$, which is far beyond the $1.4$ threshold recommended for reliable single-source astrometric solutions ([Lindegren 2018](https://www.semanticscholar.org/paper/Re-normalising-the-astrometric-chi-square-in-Gaia/94f6f242b43ada2675fd46b811bc86584a906019)). ```RUWE``` values beyond $1.4$ are thought to express a non-negligible probability of giving bad results for the parallax, as the astrometric solutions provided by the Gaia DPAC are not fitting correctly the single-source astrometry (probably due to unrecognized binarity). This prompts researchers to select sources with lower ```RUWE``` values, but in fact sources with larger ones can still be usefull to some extent. When above ```RUWE``` of $1.4$ the $k$ factor simply increases rapidly (reproducing a reasonable increase in the parallax uncertainty).
 
 The resulting $\varpi_c \pm \sigma_{\text{ext}}$ values improve the accuracy of Gaia DR3 $\varpi \pm \sigma_{\text{int}}$ values for single sources by a significant amount. Papers that directly make use of the Gaia DR3 values are prone to make overconfident assessments of parallax uncertainties and systematically overestimate distances for bright stars.
  
 
-**Parallax for groups of stars**
-When calculating distances
+**Parallax for groups of stars:**
+
+
+
 
 ## Proper motion corrections
 
