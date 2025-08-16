@@ -4,7 +4,7 @@ This repository presents Python code for the Gaia DR3 parallax, proper motion an
 ## Parallax corrections
 Astrometry in Gaia DR3 remained unchanged with respect to Gaia EDR3 ([Vallenari et al. 2023](https://ui.adsabs.harvard.edu/#abs/2023A%26A...674A...1G)), which means that the current corrections are valid for both data releases.
 
-**Parallax zero-point:**
+### Parallax zero-point:
 
 The parallax values, $\varpi$, in Gaia DR3 (as retrieved from [ESA’s Gaia Archive](https://gea.esac.esa.int/archive/) or [CDS Vizier](https://vizier.cds.unistra.fr/viz-bin/VizieR-3?-source=I/355/gaiadr3)) have associated to them a systematic bias, $\varpi_0$. Therefore the parallax must be corrected by simply removing this zero-point value:
 
@@ -16,7 +16,7 @@ The parallax bias is a function of the source brightness, ecliptic latitude, pse
 
 Objects with 2-parameter solutions (```astrometric_params_solved``` = 3) have no parallax measurements and thus the function retrieves ```nan``` for the zero point and the corrected parallax. Objects with 5-parameter solutions (```astrometric_params_solved``` = 31) are the ones that show differences in regards to the choosen recipe. Objects with 6-parameter solutions (```astrometric_params_solved``` = 95) give the same result using the recipe in Lindegren et al. (2021b) or that of Maíz Apellániz (2022).
 
-**Parallax uncertainties:**
+### Parallax uncertainties:
 
 Gaia DR3 significantly underestimates the catalogue uncertainties for the parallax, $\sigma_{\text{int}}$ (uncertainty "internal" to the catalouge), which has prompted optimistically precise results in the recent literature. To correct these internal random uncertainties we scale them up by a constant factor $k$, whose value is calculated following the recipe in [Maíz Apellániz (2022)](https://ui.adsabs.harvard.edu/abs/2022A%2526A...657A.130M). Then, a previously unaccounted systematic uncertainty of $\sigma_{\text{sys}} = 10.3$ $\mu as$ ([Maíz Apellániz et al. 2021c](https://ui.adsabs.harvard.edu/#abs/2021A%26A...649A..13M)) is added in quadrature, following [Fabricius et al. (2021)](https://ui.adsabs.harvard.edu/#abs/2021A%26A...649A...5F), to yield an "external", total (random + systematic) uncertainty of
 
@@ -27,10 +27,11 @@ The calculations are handled by the ```correct_parallax_error()``` function, whi
 The resulting $\varpi_c \pm \sigma_{\text{ext}}$ values improve the accuracy of Gaia DR3 $\varpi \pm \sigma_{\text{int}}$ values for single sources by a significant amount. Papers that directly make use of the Gaia DR3 values are prone to make overconfident assessments of parallax uncertainties and systematically overestimate distances for bright stars.
  
 
-**Parallax for groups of stars:**
+### Parallax for groups of stars:
 
+When estimating the distance to a group of stars (all assumed to lie at the same distance; wich is something that can be done for cluster members, as the volume of the cluster is typically negligible compared to the distance to it), one might be tempted to take the mean of the individual distances, each derived from the individual parallaxes. However, this approach is problematic. A more robust method is to first compute the average parallax and then convert that average into a distance. While both methods agree in the limit of negligible uncertainties, this is never the case for real data, and the second approach should therefore be preferred. An improvement on this method can be made by making sure the average parallax is a weighted mean, where each weight, $w_i$, is inversely related to the uncertainty of each individual parallax in the group.
 
-
+### Parallax uncertainties for groups of stars:
 
 ## Proper motion corrections
 
