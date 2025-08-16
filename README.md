@@ -4,11 +4,11 @@ This repository presents Python code for the Gaia DR3 parallax, proper motion an
 ## Parallax corrections
 Astrometry in Gaia DR3 remained unchanged with respect to Gaia EDR3 ([Vallenari et al. 2023](https://ui.adsabs.harvard.edu/#abs/2023A%26A...674A...1G)), which means that the current corrections are valid for both data releases.
 
-### Parallax zero-point:
+### Parallax zero-point correction:
 
 The parallax values, $\varpi$, in Gaia DR3 (as retrieved from [ESA’s Gaia Archive](https://gea.esac.esa.int/archive/) or [CDS Vizier](https://vizier.cds.unistra.fr/viz-bin/VizieR-3?-source=I/355/gaiadr3)) have associated to them a systematic bias, $\varpi_0$. Therefore the parallax must be corrected by simply removing this zero-point value:
 
-$\varpi_c = \varpi-\varpi_0$
+$$\varpi_c = \varpi-\varpi_0$$
 
 The algorithm that computes $\varpi_0$ is described in [Maíz Apellániz (2022)](https://ui.adsabs.harvard.edu/abs/2022A&A...657A.130M), which improved on the parallax zero-point recipe in [Lindegren et al. (2021b)](https://ui.adsabs.harvard.edu/#abs/2021A%26A...649A...4L) for the bright stars. The ```correct_parallax()``` function performs this correction following the recipe in Maíz Apellániz (2022) by default (the parameter ```mode``` allows the user to select also 'Lindegren' as a recipe).
 
@@ -20,7 +20,7 @@ Objects with 2-parameter solutions (```astrometric_params_solved``` = 3) have no
 
 Gaia DR3 significantly underestimates the catalogue uncertainties for the parallax, $\sigma_{\text{int}}$ (uncertainty "internal" to the catalouge), which has prompted optimistically precise results in the recent literature. To correct these internal random uncertainties we scale them up by a constant factor $k$, whose value is calculated following the recipe in [Maíz Apellániz (2022)](https://ui.adsabs.harvard.edu/abs/2022A%2526A...657A.130M). Then, a previously unaccounted systematic uncertainty of $\sigma_{\text{sys}} = 10.3$ $\mu as$ ([Maíz Apellániz et al. 2021c](https://ui.adsabs.harvard.edu/#abs/2021A%26A...649A..13M)) is added in quadrature, following [Fabricius et al. (2021)](https://ui.adsabs.harvard.edu/#abs/2021A%26A...649A...5F), to yield an "external", total (random + systematic) uncertainty of
 
-$\sigma_{\text{ext}} = \sqrt{(k\sigma_{\text{int}})^2+\sigma_{\text{sys}}^2}$
+$$\sigma_{\text{ext}} = \sqrt{(k\sigma_{\text{int}})^2+\sigma_{\text{sys}}^2}$$
 
 The calculations are handled by the ```correct_parallax_error()``` function, which computes the multiplicative factor $k$ as a function of the brightness of the source and the ```RUWE``` value. The dependence on the ```RUWE``` has been tested up to $3.0$, which is far beyond the $1.4$ threshold recommended for reliable single-source astrometric solutions ([Lindegren 2018](https://www.semanticscholar.org/paper/Re-normalising-the-astrometric-chi-square-in-Gaia/94f6f242b43ada2675fd46b811bc86584a906019)). ```RUWE``` values beyond $1.4$ are thought to express a non-negligible probability of giving bad results for the parallax, as the astrometric solutions provided by the Gaia DPAC are not fitting correctly the single-source astrometry (probably due to unrecognized binarity). This prompts researchers to select sources with lower ```RUWE``` values, but in fact sources with larger ones can still be usefull to some extent. When above ```RUWE``` of $1.4$ the $k$ factor simply increases rapidly (reproducing a reasonable increase in the parallax uncertainty).
 
@@ -29,7 +29,11 @@ The resulting $\varpi_c \pm \sigma_{\text{ext}}$ values improve the accuracy of 
 
 ### Parallax for groups of stars:
 
-When estimating the distance to a group of stars (all assumed to lie at the same distance; wich is something that can be done for cluster members, as the volume of the cluster is typically negligible compared to the distance to it), one might be tempted to take the mean of the individual distances, each derived from the individual parallaxes. However, this approach is problematic. A more robust method is to first compute the average parallax and then convert that average into a distance. While both methods agree in the limit of negligible uncertainties, this is never the case for real data, and the second approach should therefore be preferred. An improvement on this method can be made by making sure the average parallax is a weighted mean, where each weight, $w_i$, is inversely related to the uncertainty of each individual parallax in the group.
+When estimating the distance to a group of $n$ stars (all assumed to lie at the same distance; wich is something that can be done for cluster members, as the depth of the cluster is typically negligible compared to the distance to it), one might be tempted to take the average of all the individual distances, derived from the parallaxes for each individual star in the group. However, this approach is problematic as it amplifies biases in the distance estimation procedure. A more robust method is to first compute the average parallax and then convert that average into a unique distance. While both methods agree in the limit of negligible uncertainties, this is never the case for real data, and the second approach should therefore be preferred. An improvement on this method can be made by making sure the group's average parallax, $\varpi_g$, is a weighted mean, where each weight, $w_i$, is inversely related to the uncertainty of each individual previously-corrected parallax in the group, $\varpi_{c,i}$. This follows the procedure presented in [Campillay et al. (2019)](https://ui.adsabs.harvard.edu/abs/2019MNRAS.484.2137C):
+
+$$\varpi_g = \sum_{i = 1}^{n} w_i \varpi_{c,i}$$
+, where the weight for $i$-th star is
+$$w_i = \frac{1/\sigma_{ext, i}^2}{\sum_{i = 1}^{n} 1/\sigma_{ext, i}^2}$$
 
 ### Parallax uncertainties for groups of stars:
 
