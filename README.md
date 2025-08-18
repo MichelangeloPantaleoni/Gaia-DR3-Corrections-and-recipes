@@ -59,7 +59,7 @@ Gaia detectors have an outstanding dynamic range, spanning more than $15$ magnit
 
 ### Proper motion uncertainties
 
-Just like with Gaia DR3 parallaxes, the uncertainties in proper motion are typically underestimated, needing a scaling factor $k$ to be multiplied to the nominal uncertainties, $\sigma_{\mu_{\alpha}}$ and $\sigma_{\mu_{\delta}}$, and a systematic, baseline uncertainty, $\sigma_{\text{sys}}$, to be added in quadrature. For this we follow again the same procedure used for the parallax uncertainty, with the key difference that instead of using $\sigma_{\text{sys}} = 10.3$ $\mu as$, we now use $\sigma_{\text{sys}} = 23.0$ $\mu as^2/a$ (derived from Lindegren et al. 2021b).
+Just like with Gaia DR3 parallaxes, the uncertainties in proper motion are typically underestimated, needing a scaling factor $k$ to be multiplied to the nominal uncertainties, $\sigma_{\mu_{\alpha}}$ and $\sigma_{\mu_{\delta}}$, and a systematic, baseline uncertainty, $\sigma_{\text{sys}}$, to be added in quadrature. For this we follow again the same procedure used for the parallax uncertainty, with the key difference that instead of using $\sigma_{\text{sys}} = 10.3$ $\mu as$, we now use $\sigma_{\text{sys}} = 23.0$ $\mu as/a$ (derived from Lindegren et al. 2021b).
 
 
 ## Astrometric correlations when tranforming to Galactic coordinates
