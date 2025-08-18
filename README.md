@@ -32,7 +32,7 @@ The resulting $\varpi_c \pm \sigma_{\text{ext}}$ values improve the accuracy of 
 When estimating the distance to a group of $n$ stars (all assumed to lie at the same distance; wich is something that can be done for cluster members, as the depth of the cluster is typically negligible compared to the distance to it), one might be tempted to take the average of all the individual distances, derived from the parallaxes for each individual star in the group. However, this approach is problematic as it amplifies biases in the distance estimation procedure. A more robust method is to first compute the average parallax and then convert that average into a unique distance. While both methods agree in the limit of negligible uncertainties, this is never the case for real data, and the second approach should therefore be preferred. An improvement on this method can be made by making sure the group's average parallax, $\varpi_g$, is a weighted mean, where each weight, $w_i$, is inversely related to the uncertainty of each individual previously-corrected parallax in the group, $\varpi_{c,i}$. This follows the procedure presented in [Campillay et al. (2019)](https://ui.adsabs.harvard.edu/abs/2019MNRAS.484.2137C):
 
 $$\varpi_g = \sum_{i = 1}^{n} w_i \varpi_{c,i}$$
-, where the weight for $i$-th star is
+, where the weight for the $i$-th star is
 $$w_i = \frac{1/\sigma_{ext, i}^2}{\sum_{i = 1}^{n} 1/\sigma_{ext, i}^2}$$
 
 Both the group parallax and the associated uncertainty of the group parallax (see the next subsection) are calculated by the ```calculate_group_parallax()``` function.
@@ -49,6 +49,18 @@ The ```calculate_group_parallax()``` function outputs both the group's parallax 
 
 
 ## Proper motion corrections
+
+
+
+### Proper motion correction for bright stars
+
+Gaia detectors have an outstanding dynamic range, spanning more than $15$ magnitudes. For this is uses different readout modes, called window classes, and even different exposure times, which are implemented through gatings. The coordinates of faint stars are easily calibrated to the mission's reference frame (based on distant radio quasars), but for bright sources there is no reference external sample of enough quality. These bright sources tend to be nearby and thus exhibit some important relative motions. For this reason, proper motions for bright stars (meaning $G < 13.0$ mag) in Gaia DR3 exhibit some important biases. These proper motion biases can be an order of magnitude larger than the nominal uncertainty shown in the catalogue and thus corrections are needed. The ```correct_proper_motion()``` is an implementation of the recipe presented in [Cantat-Gaudin & Brandt (2021)](https://ui.adsabs.harvard.edu/abs/2021A&A...649A.124C), and is a function of the celestial coordinates of the source, the proper motion components and the G-band mean photometry. As previously mentioned, this correction is only relevant for bright (meaning $G < 13.0$ mag) sources.
+
+
+### Proper motion uncertainties
+
+Just like with Gaia DR3 parallaxes, the uncertainties in proper motion are typically underestimated, needing a scaling factor $k$ to be multiplied to the nominal uncertainties, $\sigma_{\mu_{\alpha}}$ and $\sigma_{\mu_{\delta}}$, and a systematic, baseline uncertainty, $\sigma_{\text{sys}}$, to be added in quadrature. For this we follow again the same procedure used for the parallax uncertainty, with the key difference that instead of using $\sigma_{\text{sys}} = 10.3$ $\mu as$, we now use $\sigma_{\text{sys}} = 23.0$ $\mu as^2/a$ (derived from Lindegren et al. 2021b).
+
 
 ## Astrometric correlations when tranforming to Galactic coordinates
 
