@@ -84,5 +84,36 @@ The corrected G magnitude, G', is calculated with the ```correct_gband()``` func
 
 ### G, BP and RP-band photometric uncertainties
 
+To calculate the uncertainties in Gaia magnitude photometry, $\sigma_{\text{pb}}$, we use the mean flux, $F_{\text{pb}}$, and its corresponding uncertainty, $\sigma_{F_{\text{pb}}}$, for each of the pb $=$ G, BP and RP photometric bands, applying the following formulae
+
+$$\sigma_{\text{pb}} = \sqrt{\left [\frac{-2.5}{\ln 10}\left (\frac{\sigma_{F_{\text{pb}}}}{F_{\text{pb}}}\right )\right ]^2+\sigma_{\text{pb}_0}^2}$$
+
+, where $\text{pb}_0$ is the zero-point photometric uncertainty, whose value depends on the brightness of the source following Maíz Apellániz & Weiler (2024) estimates:
+
+$$\sigma_{\text{G}_0} =
+      \begin{cases}
+      4.8 \text{ mmag}  \Longleftrightarrow   G \leq 13.00 \text{ mag}\\
+      3.9 \text{ mmag}  \Longleftrightarrow   G > 13.00 \text{ mag}\\
+      \end{cases}\\
+$$
+
+$$
+\sigma_{\text{BP}_0} =
+      \begin{cases}
+      3.8 \text{ mmag}  \Longleftrightarrow   G \leq 10.87 \text{ mag}\\
+      4.0 \text{ mmag}  \Longleftrightarrow   G > 10.87 \text{ mag}\\
+      \end{cases}\\
+$$
+
+$$
+\sigma_{\text{RP}_0} =
+      \begin{cases}
+      5.7 \text{ mmag}  \Longleftrightarrow   G \leq 10.87 \text{ mag}\\
+      3.4 \text{ mmag}  \Longleftrightarrow   G > 10.87 \text{ mag}\\
+      \end{cases}
+$$
+
+The function that performs these calculations is called ```photometry_error()```, and works with the values presented in Maíz Apellániz & Weiler (2024) by default (```mode = 'Apellaniz'```). But there is another possible recipe that can be selected in the function (```mode = 'CDS'```), which calculates these uncertainties in the same way as they are calculated by Vizier (which is less precise), following the values presented in their [Note G1](https://cdsarc.cds.unistra.fr/viz-bin/ReadMe/I/350?format=html&tex=true).
+
 ## Distances to OB stars
 
