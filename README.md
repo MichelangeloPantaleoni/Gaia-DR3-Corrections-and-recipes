@@ -50,8 +50,6 @@ The ```calculate_group_parallax()``` function outputs both the group's parallax 
 
 ## Proper motion corrections
 
-
-
 ### Proper motion correction for bright stars
 
 Gaia detectors have an outstanding dynamic range, spanning more than $15$ magnitudes. For this is uses different readout modes, called window classes, and even different exposure times, which are implemented through gatings. The coordinates of faint stars are easily calibrated to the mission's reference frame (based on distant radio quasars), but for bright sources there is no reference external sample of enough quality. These bright sources tend to be nearby and thus exhibit some important relative motions. For this reason, proper motions for bright stars (meaning $G < 13.0$ mag) in Gaia DR3 exhibit some important biases. These proper motion biases can be an order of magnitude larger than the nominal uncertainty shown in the catalogue and thus corrections are needed. The ```correct_proper_motion()``` is an implementation of the recipe presented in [Cantat-Gaudin & Brandt (2021)](https://ui.adsabs.harvard.edu/abs/2021A&A...649A.124C), and is a function of the celestial coordinates of the source, the proper motion components and the G-band mean photometry. As previously mentioned, this correction is only relevant for bright (meaning $G < 13.0$ mag) sources.
@@ -72,6 +70,19 @@ The function uses the astrometric parameters, their uncertainties and the full $
 
 Since proper motion is what benefits the most from taking care of the Gaia DR3 astrometric correlations, it is important in which order to apply the proper motion uncertainty corrections we saw earlier. Starting from $\mu_{\alpha}$ and $\mu_{\delta}$, one should first scale the uncertainties by the $k$ factor by invoking ```correct_proper_motion_error(..., only_internal = True)```, then one performs the coordinate transformations using ```full_galactic_transform()```, and finally one should add the systematic uncertainty with ```correct_proper_motion_error(..., only_external = True)```. That way we can get the corrected components of the Galactic proper motion uncertainties.
 
-## Distances to OB stars
 
 ## Photometric corrections
+
+Epoch-averaged photometry in Gaia DR3 remained unchanged with respect to what was shown in Gaia EDR3, except for those cases were the [Riello et al. (2021)](https://ui.adsabs.harvard.edu/abs/2021A&A...649A...3R) correction for the G-band photometry applied (see [Brown et al. 2021](https://ui.adsabs.harvard.edu/abs/2021A&A...650C...3G) for a corrigendum on the correction recipe). Since that correction was implemented in Gaia DR3, we don’t need to apply it anymore, but other corrections are still necessary to archive an even greater photometric precission. Still, if for some reason one needs to work with Gaia EDR3 data, the function ```correct_edr3_gband()``` performs that first correction.
+
+### G-band photometry (magnitudes)
+
+The published spectral sensitivity curves for each filter of the Gaia mission can be tested against well studied sources, that constitute photometric standards. In [Maíz Apellániz & Weiler (2018)](https://ui.adsabs.harvard.edu/abs/2018A&A...619A.180M) a full recalibration of Gaia DR2 G+BP+RP photometry was implemented, using some reliable standards in HST spectrophotometry, by following the techniques developed in [Weiler (2018)](https://ui.adsabs.harvard.edu/abs/2018A&A...617A.138W). A similar recalibration of the photometry was needed after Gaia EDR3 and was worked out by the same collaboration ([Maíz Apellániz & Weiler 2024](https://ui.adsabs.harvard.edu/abs/2025hsa..conf..223M); Weiler et al. in prep.).
+
+The corrected G magnitude, G', is calculated with the ```correct_gband()``` function, which calls the external table "Weiler_Corrections.csv" and interpolates between values for ```phot_g_mean_mag```. Corrections for the BP and RP bands are possible but too insignificant to be considered here.
+
+
+### G, BP and RP-band photometric uncertainties
+
+## Distances to OB stars
+
