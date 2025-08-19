@@ -66,6 +66,12 @@ The calculations are handled by the ```correct_proper_motion_error()``` function
 
 ## Astrometric correlations when tranforming to Galactic coordinates
 
+The astrometric values present in Gaia DR3, $\alpha_{ICRS}$, $\delta_{ICRS}$, $\varpi$, $\mu_{\alpha}$ and $\mu_{\delta}$, are correlated to one another. When converting from the equatorial frame to Galactic coordinates we would like the uncertainties to be transformed by taking these correlations into account. For that one can use the ```full_galactic_transform()``` function (we also include an IDL version), which was built following the recipe in [Butkevich & Lindegren (2022)](https://gea.esac.esa.int/archive/documentation/GDR3/Data_processing/chap_cu3ast/sec_cu3ast_intro/ssec_cu3ast_intro_tansforms.html); which is Section 4.1.7. of the Gaia DR3 Documentation ([Hobbs et al. 2022](https://gea.esac.esa.int/archive/documentation/GDR3/index.html)).
+
+The function uses the astrometric parameters, their uncertainties and the full $10\times 10$ covariance matrix to calculate the Galactic coordinates of the source, $l$ and $b$, and proper motion components in the Galactic reference frame, $\mu_l$ and $\mu_b$. It also outputs the uncertainties and the $10$ correlation values in the new frame. If the correlations are not given, the script it assumes they are zero, thus doing the naive transformation. Taking correlations into account is important mainly for proper motion, as the correlation between the two components can increase largely when transformed to a different frame, and this can be used to better asses the uncertainties in $\mu_l$ and $\mu_b$.
+
+Since proper motion is what benefits the most from taking care of the Gaia DR3 astrometric correlations, it is important in which order to apply the proper motion uncertainty corrections we saw earlier. Starting from $\mu_{\alpha}$ and $\mu_{\delta}$, one should first scale the uncertainties by the $k$ factor by invoking ```correct_proper_motion_error(..., only_internal = True)```, then one performs the coordinate transformations using ```full_galactic_transform()```, and finally one should add the systematic uncertainty with ```correct_proper_motion_error(..., only_external = True)```. That way we can get the corrected components of the Galactic proper motion uncertainties.
+
 ## Distances to OB stars
 
 ## Photometric corrections
